@@ -36,15 +36,18 @@ function unconfigure (cb) {
 
 function configure (cb) {
   if (!cb) cb = noop
-
   isConfigured(function (_, yes) {
     if (yes) return cb(null)
+    const initScriptPath = path.join(FUSE, 'scripts/init_script.sh')
+    const installScriptPath = path.join(FUSE, 'scripts/install_helper.sh')
     runAll([
-      [ 'chmod', '+s', path.join(FUSE, 'scripts/init_script.sh') ],
-      [ 'chmod', '+s', path.join(FUSE, 'scripts/install_script.sh') ],
+      [ 'chown', 'root:root', initScriptPath ],
+      [ 'chown', 'root:root', installScriptPath ],
+      [ 'chmod', '+s', initScriptPath ],
+      [ 'chmod', '+s', installScriptPath ],
       [ 'cp', path.join(FUSE, 'bin/fusermount'), '/usr/local/bin' ],
       [ 'cp', path.join(FUSE, 'bin/mount.fuse'), '/usr/local/sbin' ],
-      [ `FUSE_ROOT=${FUSE} ${path.join(FUSE, 'scripts/install_script.sh')}` ]
+      [ path.join(FUSE, 'scripts/install_helper.sh'), FUSE ]
     ], cb)
   })
 }

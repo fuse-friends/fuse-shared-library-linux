@@ -5,6 +5,7 @@ sysconfdir=/etc
 udevrulesdir=/etc/udev/rules.d
 bindir=/usr/local/bin
 
+FUSE_ROOT="$1"
 DESTDIR=""
 
 chown root:root "${DESTDIR}${bindir}/fusermount"
