@@ -1,7 +1,11 @@
 #! /bin/sh
 set -e
 
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 MOUNTPOINT=/sys/fs/fuse/connections
+
+# Gracefully exit if the package has been removed.
+which fusermount &>/dev/null || exit 5
 
 if ! grep -qw fuse /proc/filesystems; then
   echo -n "Loading fuse module"
@@ -27,3 +31,5 @@ if grep -qw fusectl /proc/filesystems && \
 else
   echo "Fuse control filesystem already available."
 fi
+
+exit 0

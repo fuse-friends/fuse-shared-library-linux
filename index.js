@@ -2,8 +2,8 @@ const fs = require('fs')
 const { spawn } = require('child_process')
 const path = require('path')
 
-const FUSE = path.join(__dirname, 'fuse-3.4.2')
-const lib = path.join(FUSE, 'lib/libfuse3.so')
+const FUSE = path.join(__dirname, 'libfuse')
+const lib = path.join(FUSE, 'lib/libfuse.so')
 const include = path.join(FUSE, 'include')
 
 module.exports = {
@@ -42,13 +42,15 @@ function configure (cb) {
     runAll([
       [ 'chmod', '+s', path.join(FUSE, 'scripts/init_script.sh') ],
       [ 'chmod', '+s', path.join(FUSE, 'scripts/install_script.sh') ],
+      [ 'cp', path.join(FUSE, 'bin/fusermount'), '/usr/local/bin' ],
+      [ 'cp', path.join(FUSE, 'bin/mount.fuse'), '/usr/local/sbin' ],
       [ `FUSE_ROOT=${FUSE} ${path.join(FUSE, 'scripts/install_script.sh')}` ]
     ], cb)
   })
 }
 
 function isConfigured (cb) {
-  fs.stat('/dev/fuse', function (err, st) {
+  fs.stat('/etc/udev/rules.d/99-fuse.rules', function (err, st) {
     if (err && err.code !== 'ENOENT') return cb(err)
     cb(null, !!st)
   })

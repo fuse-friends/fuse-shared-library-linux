@@ -9,7 +9,7 @@
       "<!(node -e \"require('fuse-shared-library-linux/lib')\")",
     ],
     "sources": [
-      "binding.cc"
+      "binding.c"
     ]
   }, {
     "target_name": "postinstall",
